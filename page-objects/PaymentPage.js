@@ -15,6 +15,7 @@ export class PaymentPage {
     this.creditCardExpInput = page.locator('[data-qa="valid-until"]')
     this.creditCardCvcInput = page.locator('[data-qa="credit-card-cvc"]')
     this.payButton = page.locator('[data-qa="pay-button"]')
+    this.paymentSuccessMessage = page.getByRole('heading', { name: 'Thank you for shopping with us!' })
   }
 
   activateDiscount = async () => {
@@ -56,7 +57,13 @@ export class PaymentPage {
     await this.creditCardExpInput.fill(paymentDetails.expirationDate)
     await this.creditCardCvcInput.waitFor()
     await this.creditCardCvcInput.fill(paymentDetails.cvc)
+  }
+
+  completePayment = async () => {
     await this.payButton.waitFor()
     await this.payButton.click()
+    await this.page.waitForURL(/\/thank-you/, { timeout: 3000 })
+    const successMessage = await this.paymentSuccessMessage.innerText()
+    await expect(this.paymentSuccessMessage).toHaveText(successMessage)
   }
 }
