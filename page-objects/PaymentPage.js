@@ -10,6 +10,11 @@ export class PaymentPage {
     this.totalValue = page.locator('[data-qa="total-value"]')
     this.discountedValue = page.locator('[data-qa="total-with-discount-value"]')
     this.discountActivateMessage = page.locator('[data-qa="discount-active-message"]')
+    this.creditCardOwnerInput = page.locator('[data-qa="credit-card-owner"]')
+    this.creditCardNumberInput = page.locator('[data-qa="credit-card-number"]')
+    this.creditCardExpInput = page.locator('[data-qa="valid-until"]')
+    this.creditCardCvcInput = page.locator('[data-qa="credit-card-cvc"]')
+    this.payButton = page.locator('[data-qa="pay-button"]')
   }
 
   activateDiscount = async () => {
@@ -40,5 +45,18 @@ export class PaymentPage {
     const totalValueOnlyStringNumber = totalValueText.replace("$", "")
     const totalValueNumber = parseInt(totalValueOnlyStringNumber, 10)
     expect(discountValueNumber).toBeLessThan(totalValueNumber)
+  }
+
+  fillPaymentDetails = async (paymentDetails) => {
+    await this.creditCardOwnerInput.waitFor()
+    await this.creditCardOwnerInput.fill(paymentDetails.cardOwner)
+    await this.creditCardNumberInput.waitFor()
+    await this.creditCardNumberInput.fill(paymentDetails.cardNumber)
+    await this.creditCardExpInput.waitFor()
+    await this.creditCardExpInput.fill(paymentDetails.expirationDate)
+    await this.creditCardCvcInput.waitFor()
+    await this.creditCardCvcInput.fill(paymentDetails.cvc)
+    await this.payButton.waitFor()
+    await this.payButton.click()
   }
 }
